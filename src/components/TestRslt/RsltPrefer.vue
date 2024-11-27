@@ -324,8 +324,6 @@ const setChart = () => {
 	var labels2 = [];
 	var data2 = [];
 
-	labels1.push(t('RsltPrefer_8'));
-	data1.push(100);
 	labels1.push(`${t('RsltPrefer_9')} (${Rslt1.value[0].irate}%)`);
 	data1.push(Rslt1.value[0].irate);
 
@@ -334,7 +332,7 @@ const setChart = () => {
 		datasets: [
 			{
 				label: t('RsltPrefer_9') + '(%)',
-				backgroundColor: ['#f1f1f1', '#f87979'],
+				backgroundColor: ['#f87979'],
 				data: data1,
 			},
 		],
@@ -354,7 +352,7 @@ const setChart = () => {
 			datasets: [
 				{
 					label: t('RsltPrefer_10'),
-					backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+					backgroundColor: ['#f87979', '#f87979', '#f87979'],
 					data: data2,
 				},
 			],

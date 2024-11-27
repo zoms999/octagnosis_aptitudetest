@@ -12,7 +12,7 @@
 					<p class="text03">{{ $t('life_plan') }}</p>
 				</div>
 				<p class="text04">
-					{{ $t('description') }}
+					<span v-html="$t('description')"></span>
 				</p>
 			</div>
 		</div>

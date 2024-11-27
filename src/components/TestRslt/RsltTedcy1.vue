@@ -74,7 +74,7 @@ const Rslt1 = ref({});
 const Rslt2 = ref({});
 
 const Rslt1_1 = ref({});
-const Rslt1_2 = ref({});
+const Rslt1_2 = ref({}); 
 
 // Html ref  ********************************
 
