@@ -28,22 +28,12 @@
 					</p>
 				</div>
 
-				<div class="chart-wrap d-flex ">
+				<div class="chart-wrap d-flex justify-content-center">
 					<div class="p-3 chart1">
-						<Bar
-							id="Chart1"
-							 v-if="chartLoadYn"
-							:data="ChartData1"
-							:options="ChartOptions1"
-						/>
+						<canvas ref="chart1Ref"></canvas>
 					</div>
 					<div class="p-3 chart2">
-						<Radar
-							id="Chart2"
-							v-if="chartLoadYn"
-							:data="ChartData2"
-							:options="ChartOptions2"
-						/>
+						<canvas ref="chart2Ref"></canvas>
 					</div>
 				</div>
 
@@ -66,20 +56,12 @@
 import { onMounted, ref, computed, watch, reactive } from 'vue';
 import { useAlert } from '@/hooks/useAlert';
 import { useAxios } from '@/hooks/useAxios';
-import { Bar, Radar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler } from 'chart.js'
+import { Chart, registerables } from 'chart.js';
 import { useI18n } from 'vue-i18n';
 
+Chart.register(...registerables);
 
 const { vAlert, vSuccess } = useAlert();
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler)
-
 const { t } = useI18n(); // Import translation function
 
 // Props / Emit  ****************************
@@ -104,17 +86,19 @@ const Rslt3 = ref({});
 // chartData와 chartOptions 상태 정의
 var ChartData1 = reactive();
 var ChartOptions1 = {
-  responsive: true,
-  maintainAspectRatio: false
+	responsive: true,
+	maintainAspectRatio: false,
 };
 
 var ChartData2 = reactive();
 var ChartOptions2 = {
-  responsive: true,
-  maintainAspectRatio: false
+	responsive: true,
+	maintainAspectRatio: false,
 };
 
 const chartLoadYn = ref(false);
+const chart1Ref = ref(null);
+const chart2Ref = ref(null);
 
 // Html ref  ********************************
 
@@ -167,7 +151,6 @@ const getRsltThink = () => {
 };
 
 const setChart = () => {
-
 	var labels1 = [];
 	var data1 = [];
 
@@ -186,7 +169,7 @@ const setChart = () => {
 			},
 		],
 	};
-	
+
 	ChartData2 = {
 		labels: labels1,
 		datasets: [
@@ -203,10 +186,24 @@ const setChart = () => {
 		],
 	};
 
+	if (chart1Ref.value) {
+		new Chart(chart1Ref.value, {
+			type: 'bar',
+			data: ChartData1,
+			options: ChartOptions1,
+		});
+	}
+
+	if (chart2Ref.value) {
+		new Chart(chart2Ref.value, {
+			type: 'radar',
+			data: ChartData2,
+			options: ChartOptions2,
+		});
+	}
+
 	chartLoadYn.value = true;
 };
-
-
 
 // Etc  *************************************
 </script>
@@ -219,10 +216,12 @@ const setChart = () => {
 @import url(@/assets/utility.css);
 
 .chart1 {
-	width:50%; height:300px;
+	width: 40%;
+	height: 320px;
 }
 .chart2 {
-	width:50%; height:300px;
+	width: 60%;
+	height: 320px;
 }
 
 </style>

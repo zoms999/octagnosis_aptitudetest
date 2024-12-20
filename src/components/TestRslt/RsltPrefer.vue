@@ -10,22 +10,12 @@
 					</p>
 				</div>
 
-				<div class="chart-wrap d-flex">
+				<div class="chart-wrap d-flex justify-content-center">
 					<div class="p-3 chart1">
-						<Bar
-							id="Chart1"
-							v-if="chartLoadYn"
-							:data="ChartData1"
-							:options="ChartOptions1"
-						/>
+						<canvas ref="chart1Ref"></canvas>
 					</div>
 					<div class="p-3 chart2">
-						<Bar
-							id="Chart2"
-							v-if="chartLoadYn"
-							:data="ChartData2"
-							:options="ChartOptions2"
-						/>
+						<canvas ref="chart2Ref"></canvas>
 					</div>
 				</div>
 
@@ -184,35 +174,12 @@
 import { onMounted, ref, computed, watch, reactive } from 'vue';
 import { useAlert } from '@/hooks/useAlert';
 import { useAxios } from '@/hooks/useAxios';
-import { Bar, Radar } from 'vue-chartjs';
-import {
-	Chart as ChartJS,
-	Title,
-	Tooltip,
-	Legend,
-	BarElement,
-	CategoryScale,
-	LinearScale,
-	RadialLinearScale,
-	PointElement,
-	LineElement,
-	Filler,
-} from 'chart.js';
+import { Chart, registerables } from 'chart.js';
 import { useI18n } from 'vue-i18n';
 
+Chart.register(...registerables);
+
 const { vAlert, vSuccess } = useAlert();
-ChartJS.register(
-	Title,
-	Tooltip,
-	Legend,
-	BarElement,
-	CategoryScale,
-	LinearScale,
-	RadialLinearScale,
-	PointElement,
-	LineElement,
-	Filler,
-);
 const { t } = useI18n(); // Import translation function
 
 // Props / Emit  ****************************
@@ -268,6 +235,9 @@ const chartLoadYn = ref(false);
 
 // Html ref  ********************************
 
+const chart1Ref = ref(null);
+const chart2Ref = ref(null);
+
 // Axios / Route  ***************************
 
 const Procs = ref({
@@ -319,46 +289,63 @@ const getRsltPrefer = () => {
 };
 
 const setChart = () => {
-	var labels1 = [];
-	var data1 = [];
-	var labels2 = [];
-	var data2 = [];
-
-	labels1.push(`${t('RsltPrefer_9')} (${Rslt1.value[0].irate}%)`);
-	data1.push(Rslt1.value[0].irate);
-
-	ChartData1 = {
-		labels: labels1,
-		datasets: [
-			{
-				label: t('RsltPrefer_9') + '(%)',
-				backgroundColor: ['#f87979'],
-				data: data1,
+	if (chart1Ref.value) {
+		new Chart(chart1Ref.value, {
+			type: 'bar',
+			data: {
+				labels: [`선호반응률 (${Rslt1.value[0].irate}%)`],
+				datasets: [{
+					label: '선호반응률(%)',
+					backgroundColor: '#f87979',
+					data: [Rslt1.value[0].irate],
+					barThickness: 30,
+				}],
 			},
-		],
-	};
-
-	if (Rslt2.value[0] != null) {
-		labels2.push(`${Rslt2.value[0].tdname1} (${Rslt2.value[0].rrate1}%)`);
-		data2.push(Rslt2.value[0].rrate1);
-		labels2.push(`${Rslt2.value[0].tdname2} (${Rslt2.value[0].rrate2}%)`);
-		data2.push(Rslt2.value[0].rrate2);
-		labels2.push(`${Rslt2.value[0].tdname3} (${Rslt2.value[0].rrate3}%)`);
-		data2.push(Rslt2.value[0].rrate3);
-
-		ChartData2 = {
-			labels: labels2,
-
-			datasets: [
-				{
-					label: t('RsltPrefer_10'),
-					backgroundColor: ['#f87979', '#f87979', '#f87979'],
-					data: data2,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				scales: {
+					y: {
+						beginAtZero: true,
+						max: 100,
+					},
 				},
-			],
-		};
+			},
+		});
 	}
-	chartLoadYn.value = true;
+
+	if (chart2Ref.value) {
+		new Chart(chart2Ref.value, {
+			type: 'bar',
+			data: {
+				labels: [
+					`선호형1 (${Rslt2.value[0].rrate1}%)`,
+					`선호형2 (${Rslt2.value[0].rrate2}%)`,
+					`선호형3 (${Rslt2.value[0].rrate3}%)`,
+				],
+				datasets: [{
+					label: '선호형',
+					backgroundColor: '#f87979',
+					data: [
+						Rslt2.value[0].rrate1,
+						Rslt2.value[0].rrate2,
+						Rslt2.value[0].rrate3,
+					],
+					barThickness: 30,
+				}],
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				scales: {
+					y: {
+						beginAtZero: true,
+						max: 100,
+					},
+				},
+			},
+		});
+	}
 };
 
 // Etc  *************************************
@@ -370,12 +357,20 @@ const setChart = () => {
 @import url(@/assets/sub.css);
 @import url(@/assets/utility.css);
 
+.chart-wrap {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 0.5rem;
+}
+
 .chart1 {
-	width: 40%;
-	height: 300px;
+	width: 30%;
+	max-width: 150px;
+	height: 250px;
 }
 .chart2 {
-	width: 60%;
-	height: 300px;
+	width: 70%;
+	max-width: 650px;
+	height: 250px;
 }
 </style>
