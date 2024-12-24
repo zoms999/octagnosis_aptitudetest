@@ -175,7 +175,15 @@ const setChart = () => {
 		datasets: [
 			{
 				label: t('RsltThink_4'),
-				backgroundColor: 'rgba(255,99,132,0.2)',
+				backgroundColor: [
+					'#36a2eb',  // 파란색
+					'#ff6384',  // 분홍색
+					'#4bc0c0',  // 청록색
+					'#ff9f40',  // 주황색
+					'#9966ff',  // 보라색
+					'#ffcd56',  // 노란색
+					'#c9cbcf'   // 회색
+				],
 				borderColor: 'rgba(255,99,132,1)',
 				pointBackgroundColor: 'rgba(255,99,132,1)',
 				pointBorderColor: '#fff',

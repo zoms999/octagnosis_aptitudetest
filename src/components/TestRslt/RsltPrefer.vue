@@ -293,9 +293,9 @@ const setChart = () => {
 		new Chart(chart1Ref.value, {
 			type: 'bar',
 			data: {
-				labels: [`선호반응률 (${Rslt1.value[0].irate}%)`],
+				labels: [`${t('RsltPrefer_9')} (${Rslt1.value[0].irate}%)`],
 				datasets: [{
-					label: '선호반응률(%)',
+					label: t('RsltPrefer_9'),
 					backgroundColor: '#f87979',
 					data: [Rslt1.value[0].irate],
 					barThickness: 30,
@@ -314,23 +314,30 @@ const setChart = () => {
 		});
 	}
 
-	if (chart2Ref.value) {
+	if (chart2Ref.value && Rslt2.value[0]) {
+		const labels = [];
+		const data = [];
+		const rates = ['rrate1', 'rrate2', 'rrate3'];
+		const names = ['tdname1', 'tdname2', 'tdname3'];
+		const barColors = ['#FF9F9F', '#9FD5FF', '#B8F3B8'];
+
+		for (let i = 0; i < 3; i++) {
+			const rate = rates[i];
+			const name = names[i];
+			if (Rslt2.value[0][rate] && Rslt2.value[0][name]) {
+				labels.push(`${Rslt2.value[0][name]} (${Rslt2.value[0][rate]}%)`);
+				data.push(Rslt2.value[0][rate]);
+			}
+		}
+
 		new Chart(chart2Ref.value, {
 			type: 'bar',
 			data: {
-				labels: [
-					`선호형1 (${Rslt2.value[0].rrate1}%)`,
-					`선호형2 (${Rslt2.value[0].rrate2}%)`,
-					`선호형3 (${Rslt2.value[0].rrate3}%)`,
-				],
+				labels: labels,
 				datasets: [{
-					label: '선호형',
-					backgroundColor: '#f87979',
-					data: [
-						Rslt2.value[0].rrate1,
-						Rslt2.value[0].rrate2,
-						Rslt2.value[0].rrate3,
-					],
+					label: t('RsltPrefer_10'),
+					backgroundColor: barColors.slice(0, data.length),
+					data: data,
 					barThickness: 30,
 				}],
 			},
